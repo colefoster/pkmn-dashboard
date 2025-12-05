@@ -15,7 +15,7 @@ class Dashboard extends BaseDashboard
             Action::make('import_pokemon')
                 ->label('Import Pokemon')
                 ->icon('heroicon-o-arrow-down-tray')
-                ->color('success')
+                ->color('primary')
                 ->requiresConfirmation()
                 ->modalHeading('Import Pokemon Data')
                 ->modalDescription('This will import Pokemon data from PokeAPI. This may take several minutes.')

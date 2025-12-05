@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -23,17 +24,12 @@ class ItemsTable
                     ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
+                ImageColumn::make('sprite'),
+
                 TextColumn::make('cost')
                     ->money()
                     ->sortable(),
-                TextColumn::make('fling_power')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('fling_effect')
-                    ->searchable(),
                 TextColumn::make('category')
-                    ->searchable(),
-                TextColumn::make('sprite')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()

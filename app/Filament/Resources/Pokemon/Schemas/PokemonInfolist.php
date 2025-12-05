@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Pokemon\Schemas;
 
 use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -17,30 +18,33 @@ class PokemonInfolist
                 TextEntry::make('name'),
                 TextEntry::make('height')
                     ->numeric()
+                    ->formatStateUsing(fn ($state) => number_format($state / 10, 1). " m")
                     ->placeholder('-'),
                 TextEntry::make('weight')
                     ->numeric()
+                    ->formatStateUsing(fn ($state) => number_format($state / 10, 1). " kg")
                     ->placeholder('-'),
                 TextEntry::make('base_experience')
                     ->numeric()
                     ->placeholder('-'),
-                IconEntry::make('is_default')
-                    ->boolean(),
+
                 TextEntry::make('species.name')
                     ->label('Species')
                     ->placeholder('-'),
-                TextEntry::make('sprite_front_default')
+                ImageEntry::make('sprite_front_default')
                     ->placeholder('-'),
-                TextEntry::make('sprite_front_shiny')
+                ImageEntry::make('sprite_front_shiny')
                     ->placeholder('-'),
-                TextEntry::make('sprite_back_default')
+                ImageEntry::make('sprite_back_default')
                     ->placeholder('-'),
-                TextEntry::make('sprite_back_shiny')
+                ImageEntry::make('sprite_back_shiny')
                     ->placeholder('-'),
                 TextEntry::make('cry_latest')
                     ->placeholder('-'),
                 TextEntry::make('cry_legacy')
                     ->placeholder('-'),
+                IconEntry::make('is_default')
+                    ->boolean(),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),
