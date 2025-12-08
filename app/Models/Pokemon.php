@@ -181,6 +181,7 @@ class Pokemon extends Model
             $stageNum = $index + 1;
             $flatData["stage_{$stageNum}_sprite"] = $stage['sprite'];
             $flatData["stage_{$stageNum}_name"] = ucwords(str_replace('-', ' ', $stage['name']));
+            $flatData["stage_{$stageNum}_api_id"] = $stage['api_id'] ?? null;
             $flatData["stage_{$stageNum}_method"] = $stage['method'] ?? null;
         }
 
@@ -205,6 +206,7 @@ class Pokemon extends Model
         $stage = [
             'sprite' => $defaultPokemon?->sprite_front_default,
             'name' => $species->name,
+            'api_id' => $defaultPokemon?->api_id,
             'method' => null
         ];
 

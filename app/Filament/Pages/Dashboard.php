@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Widgets\DatabaseStatsOverview;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Pages\Dashboard as BaseDashboard;
@@ -40,6 +41,14 @@ class Dashboard extends BaseDashboard
                             ->send();
                     }
                 }),
+        ];
+    }
+
+    public function getWidgets(): array
+    {
+        return [
+            DatabaseStatsOverview::class,
+            \App\Filament\Widgets\ImportActionsWidget::class,
         ];
     }
 }
