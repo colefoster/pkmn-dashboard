@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\Pokemon\Schemas;
 
-use App\Filament\Resources\Pokemon\Schemas\Components\PokemonMovesRepeatable;
+use App\Filament\Resources\Pokemon\Schemas\Components\EvolutionsSection;
+use App\Filament\Resources\Pokemon\Schemas\Components\SpeciesDetailsSection;
+use App\Filament\Resources\Pokemon\Schemas\Components\SpritesSection;
+use App\Filament\Resources\Pokemon\Schemas\Components\StatsSection;
 use App\Livewire\PokemonMovesTable;
-use Filament\Infolists\Components\IconEntry;
-use Filament\Infolists\Components\ImageEntry;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Livewire;
-use Filament\Schemas\Components\Section;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
 class PokemonInfolist
@@ -17,61 +17,33 @@ class PokemonInfolist
     {
         return $schema
             ->components([
-
-                Section::make('Sprites')
-                    ->heading('')
-                    ->hiddenLabel()
-                    ->columns([
-                        'sm' => 4,
-                        'md' => 4,
-                        'lg' => 2,
-                        'xl' => 4,
-                        '2xl' => 4,
-                    ])
-                    ->schema([
-                        ImageEntry::make('sprite_front_default')
-                            ->hiddenLabel(),
-                        ImageEntry::make('sprite_front_shiny')
-                            ->hiddenLabel(),
-
-                        ImageEntry::make('sprite_back_default')
-                            ->hiddenLabel(),
-                        ImageEntry::make('sprite_back_shiny')
-                            ->hiddenLabel(),
+                SpeciesDetailsSection::make()
+                    ->columnSpan([
+                        'sm' => 'full',
+                        'md' => 'full',
+                        'lg' => 1,
                     ]),
-                Section::make('Info')
-                    ->columns([
-                        'sm' => 4,
-                        'md' => 4,
-                        'lg' => 2,
-                        'xl' => 4,
-                    ])
+                Grid::make(1)
                     ->schema([
-                        TextEntry::make('species.name')
-                            ->label('Species')
-                            ->placeholder('-'),
-                        TextEntry::make('height')
-                            ->numeric()
-                            ->formatStateUsing(fn($state) => number_format($state / 10, 1) . " m")
-                            ->placeholder('-'),
-
-                        TextEntry::make('base_experience')
-                            ->numeric()
-                            ->formatStateUsing(fn($state) => $state . " points")
-                            ->placeholder('-')
-                            ->label('Base XP'),
-                        TextEntry::make('weight')
-                            ->numeric()
-                            ->formatStateUsing(fn($state) => number_format($state / 10, 1) . " kg")
-                            ->placeholder('-'),
+                        SpritesSection::make(),
+                        StatsSection::make(),
+                    ])
+                    ->columnSpan([
+                        'sm' => 'full',
+                        'md' => 'full',
+                        'lg' => 1,
                     ]),
+
+                EvolutionsSection::make()
+                    ->columnSpanFull(),
 
                 Livewire::make(PokemonMovesTable::class, fn($record) => ['pokemon' => $record])
                     ->columnSpanFull()
             ])
             ->columns([
                 'sm' => 1,
-                'md' => 1
+                'md' => 1,
+                'lg' => 2,
             ]);
     }
 }

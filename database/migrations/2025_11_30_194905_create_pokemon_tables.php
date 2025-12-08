@@ -141,7 +141,8 @@ $table->softDeletes();
             $table->integer('effort');
             $table->timestamps();
 
-            $table->index(['pokemon_id', 'stat_name']);
+            // Covering index for efficient stat sorting in Filament tables
+            $table->index(['pokemon_id', 'stat_name', 'base_stat']);
         });
 
         // Pokemon Types pivot table

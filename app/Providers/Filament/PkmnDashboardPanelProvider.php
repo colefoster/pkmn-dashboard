@@ -28,6 +28,7 @@ class PkmnDashboardPanelProvider extends PanelProvider
             ->id('pkmn-dashboard')
             ->path('')
             ->login()
+            ->favicon(asset('/images/pokeball.png'))
             ->colors([
                 'primary' => Color::Fuchsia,
 
@@ -35,7 +36,7 @@ class PkmnDashboardPanelProvider extends PanelProvider
                 'special' => '#375ab2',
                 'status' => Color::Gray,
 
-                //'normal' => Color::Slate,
+                'normal' => Color::Neutral,
                 'grass' => '#3fa129',
                 'fire' => '#e62829',
                 'water' => '#2980ef',
