@@ -29,10 +29,7 @@ class EvolutionsSection
                     ->label(fn($record) => $record->getEvolutionChainData()['stage_1_name'])
                     ->hiddenLabel(fn($record) => $record->getEvolutionChainData()['stage_1_name'] !== $record->name)
                     ->state(fn($record) => $record->getEvolutionChainData()['stage_1_sprite'] ?? null)
-                    ->extraImgAttributes([
-                        'class' => 'pixelated',
-                        'style' => 'image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges;',
-                    ])
+
                     ->defaultImageUrl(url('/images/sprite-placeholder.png')),
 
                 IconEntry::make('arrow_1')
@@ -48,10 +45,7 @@ class EvolutionsSection
                     ->hiddenLabel(fn($record) => strtolower($record->getEvolutionChainData()['stage_2_name']) !== $record->name)
                     ->state(fn($record) => $record->getEvolutionChainData()['stage_2_sprite'] ?? null)
                     ->hidden(fn($record) => ($record->getEvolutionChainData()['stage_count'] ?? 0) < 2)
-                    ->extraImgAttributes([
-                        'class' => 'pixelated',
-                        'style' => 'image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges;',
-                    ])
+
                     ->defaultImageUrl(url('/images/sprite-placeholder.png')),
 
                 // Arrow 2->3
@@ -59,7 +53,6 @@ class EvolutionsSection
                     ->hiddenLabel()
                     ->icon('heroicon-o-arrow-right')
                     ->state(true)
-                    ->alignCenter()
                     ->hidden(fn($record) => ($record->getEvolutionChainData()['stage_count'] ?? 0) < 3),
 
                 // Stage 3
@@ -69,10 +62,7 @@ class EvolutionsSection
                     ->hiddenLabel(fn($record) => strtolower($record->getEvolutionChainData()['stage_3_name']) !== $record->name)
                     ->state(fn($record) => $record->getEvolutionChainData()['stage_3_sprite'] ?? null)
                     ->hidden(fn($record) => ($record->getEvolutionChainData()['stage_count'] ?? 0) < 3)
-                    ->extraImgAttributes([
-                        'class' => 'pixelated',
-                        'style' => 'image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges;',
-                    ])
+
                     ->defaultImageUrl(url('/images/sprite-placeholder.png')),
 
 
@@ -82,9 +72,8 @@ class EvolutionsSection
                     ->state(fn($record) => $record->getEvolutionChainData()['stage_1_method'] ?? null)
                     ->hidden(fn($record) => empty($record->getEvolutionChainData()['stage_1_method'] ?? null))
                     ->badge()
-                    ->alignCenter()
                     //->columnSpan(["sm" => "2", "md" => "2", "lg" => "2"])
-                    ->columnStart(["sm" => "1", "md" => "1", "lg" => "1"])
+                    ->columnStart(["sm" => "2", "md" => "2", "lg" => "2"])
                     ->color('info'),
 
                 TextEntry::make('stage_2_method')
@@ -92,8 +81,7 @@ class EvolutionsSection
                     ->state(fn($record) => $record->getEvolutionChainData()['stage_2_method'] ?? null)
                     ->hidden(fn($record) => empty($record->getEvolutionChainData()['stage_2_method'] ?? null))
                     ->badge()
-                    ->columnStart(["sm" => "3", "md" => "3", "lg" => "3"])
-                    ->alignCenter()
+                    ->columnStart(["sm" => "4", "md" => "4", "lg" => "4"])
                     ->color('info'),
 
             ]);
