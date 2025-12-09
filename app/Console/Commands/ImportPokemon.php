@@ -561,12 +561,9 @@ class ImportPokemon extends Command
                     }
                     $pokemon->abilities()->sync($abilityIds);
 
-                    // Sync Moves (limit to first 20 to avoid DB bloat)
+                    // Sync Moves
                     $moveIds = [];
-                    $movesProcessed = 0;
                     foreach ($pokemonDetails['moves'] ?? [] as $moveData) {
-                        if ($movesProcessed >= 20) break;
-
                         $move = Move::where('name', $moveData['move']['name'])->first();
                         if ($move && !isset($moveIds[$move->id])) {
                             $versionGroupDetails = $moveData['version_group_details'][0] ?? null;
@@ -574,7 +571,6 @@ class ImportPokemon extends Command
                                 'learn_method' => $versionGroupDetails['move_learn_method']['name'] ?? null,
                                 'level_learned_at' => $versionGroupDetails['level_learned_at'] ?? null,
                             ];
-                            $movesProcessed++;
                         }
                     }
                     $pokemon->moves()->sync($moveIds);
