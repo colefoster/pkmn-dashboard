@@ -39,7 +39,8 @@ class PokemonMovesTable extends Component implements HasForms, HasTable, HasActi
                     ->label('Move Name')
                     ->searchable()
                     ->sortable()
-                    ->formatStateUsing(fn($state) => ucwords(str_replace('-', ' ', $state))),
+                    ->formatStateUsing(fn($state) => ucwords(str_replace('-', ' ', $state)))
+                    ->url(fn($record) => "/moves/" . $record->api_id),
                 TextColumn::make('type.name')
                     ->label('Type')
                     ->badge()
@@ -78,6 +79,7 @@ class PokemonMovesTable extends Component implements HasForms, HasTable, HasActi
                     ->numeric()
                     ->placeholder('-'),
             ])
+
             ->defaultSort('name')
             ->paginated([10, 25, 50, 100]);
     }

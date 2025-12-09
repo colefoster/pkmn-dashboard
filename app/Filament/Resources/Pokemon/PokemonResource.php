@@ -22,6 +22,8 @@ class PokemonResource extends Resource
 {
     protected static ?string $model = Pokemon::class;
 
+
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'name';

@@ -8,12 +8,16 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
 class MovesTable
 {
+    public static bool $usePokemonSprites = true;
+
+
     public static function configure(Table $table): Table
     {
         return $table
@@ -39,6 +43,7 @@ class MovesTable
                     ->toggleable(),
                 TextColumn::make('accuracy')
                     ->numeric()
+                    ->formatStateUsing(fn ($state) => $state . '%')
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('priority')
@@ -58,9 +63,34 @@ class MovesTable
                     ->formatStateUsing(fn ($state) => ucfirst($state ?? '-'))
                     ->searchable()
                     ->toggleable(),
+                ImageColumn::make('pokemon_sprites')
+                    ->label('Pokemon')
+                    ->visible(fn() => self::$usePokemonSprites)
+                    ->getStateUsing(function ($record) {
+                        // Return all pokemon sprites shuffled - let limit() handle the count
+                        return $record->pokemon
+                            ->shuffle()
+                            ->pluck('sprite_front_default')
+                            ->filter()
+                            ->values()
+                            ->toArray();
+                    })
+                    ->limit(3)
+                    ->limitedRemainingText(
+                        size: 'md'
+                    )
+                    ->ring(2)
+                    ->imageSize(56)
+                    ->extraImgAttributes([
+                        'class' => 'rounded-full'
+                    ])
+
+                    ->toggleable(),
                 TextColumn::make('pokemon.name')
                     ->label('Pokemon')
+                    ->visible(fn() => !self::$usePokemonSprites)
                     ->badge()
+                    ->color(fn($record) => $record->type?->name ?? 'gray')
                     ->limitList(3)
                     ->formatStateUsing(fn($state) => ucwords(str_replace('-', ' ', $state)))
                     ->searchable()

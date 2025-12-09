@@ -38,7 +38,8 @@ class MoveResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return MovesTable::configure($table);
+        $movesTable = MovesTable::configure($table);
+        return $movesTable;
     }
 
     public static function getRelations(): array
