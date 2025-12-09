@@ -37,6 +37,12 @@ class AbilitiesTable
                     ->formatStateUsing(fn($state) => ucwords(str_replace('-', ' ', $state)))
                     ->searchable()
                     ->toggleable(),
+                TextColumn::make('pokemon_count')
+                    ->label('# Pokemon')
+                    ->counts('pokemon')
+                    ->alignCenter()
+                    ->sortable()
+                    ->toggleable(),
                 IconColumn::make('is_main_series')
                     ->boolean()
                     ->toggleable(),

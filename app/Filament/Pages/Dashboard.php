@@ -13,42 +13,14 @@ class Dashboard extends BaseDashboard
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('import_pokemon')
-                ->label('Import Pokemon')
-                ->icon('heroicon-o-arrow-down-tray')
-                ->color('primary')
-                ->requiresConfirmation()
-                ->modalHeading('Import Pokemon Data')
-                ->modalDescription('This will import Pokemon data from PokeAPI. This may take several minutes.')
-                ->modalSubmitActionLabel('Start Import')
-                ->action(function () {
-                    try {
-                        // Run the import command with a max limit to prevent long execution
-                        Artisan::call('pokemon:import', [
-                            '--max' => 151, // Import first 151 Pokemon
-                        ]);
 
-                        Notification::make()
-                            ->title('Pokemon import completed')
-                            ->success()
-                            ->body('Successfully imported Pokemon data from PokeAPI.')
-                            ->send();
-                    } catch (\Exception $e) {
-                        Notification::make()
-                            ->title('Import failed')
-                            ->danger()
-                            ->body($e->getMessage())
-                            ->send();
-                    }
-                }),
-        ];
+            ];
     }
 
     public function getWidgets(): array
     {
         return [
             DatabaseStatsOverview::class,
-            \App\Filament\Widgets\ImportActionsWidget::class,
         ];
     }
 }
