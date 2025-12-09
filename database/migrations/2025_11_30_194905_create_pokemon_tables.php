@@ -179,6 +179,7 @@ $table->softDeletes();
             $table->timestamps();
 
             $table->index(['pokemon_id', 'move_id']);
+            $table->index('move_id'); // Optimize queries for finding all pokemon that can learn a specific move
         });
 
         // Items table
