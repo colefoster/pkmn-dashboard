@@ -166,6 +166,7 @@ $table->softDeletes();
             $table->timestamps();
 
             $table->unique(['pokemon_id', 'ability_id']);
+            $table->index('ability_id'); // Optimize queries for finding all pokemon with a specific ability
         });
 
         // Pokemon Moves pivot table

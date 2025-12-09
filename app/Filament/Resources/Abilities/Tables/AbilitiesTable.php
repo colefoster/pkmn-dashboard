@@ -9,6 +9,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -21,11 +22,24 @@ class AbilitiesTable
             ->columns([
                 TextColumn::make('api_id')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->formatStateUsing(function ($state) {
+                        return str_replace(" ", "-", (ucwords(str_replace("-", " ", $state))));
+                    })
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('pokemon.name')
+                    ->label('Pokemon')
+                    ->badge()
+                    ->limit(3)
+                    ->formatStateUsing(fn($state) => ucwords(str_replace('-', ' ', $state)))
+                    ->searchable()
+                    ->toggleable(),
                 IconColumn::make('is_main_series')
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
