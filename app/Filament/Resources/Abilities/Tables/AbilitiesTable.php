@@ -33,7 +33,7 @@ class AbilitiesTable
                 TextColumn::make('pokemon.name')
                     ->label('Pokemon')
                     ->badge()
-                    ->limit(3)
+                    ->limitList(5)
                     ->formatStateUsing(fn($state) => ucwords(str_replace('-', ' ', $state)))
                     ->searchable()
                     ->toggleable(),

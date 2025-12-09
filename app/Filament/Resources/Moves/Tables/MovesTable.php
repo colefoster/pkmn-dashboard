@@ -20,68 +20,139 @@ class MovesTable
             ->columns([
                 TextColumn::make('api_id')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->formatStateUsing(function ($state) {
+                        return str_replace(" ", "-", (ucwords(str_replace("-", " ", $state))));
+                    })
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('power')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('pp')
+                    ->label('PP')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('accuracy')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('priority')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('type.name')
-                    ->searchable(),
+                    ->label('Type')
+                    ->badge()
+                    ->color(fn($state): string => $state ?? 'gray')
+                    ->formatStateUsing(fn($state) => ucfirst($state ?? '-'))
+                    ->searchable()
+                    ->toggleable(),
                 TextColumn::make('damage_class')
-                    ->searchable(),
-                TextColumn::make('effect_chance')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('contest_type')
-                    ->searchable(),
+                    ->label('Class')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => ucfirst($state ?? '-'))
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('pokemon.name')
+                    ->label('Pokemon')
+                    ->badge()
+                    ->limitList(3)
+                    ->formatStateUsing(fn($state) => ucwords(str_replace('-', ' ', $state)))
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('pokemon_count')
+                    ->label('# Pokemon')
+                    ->counts('pokemon')
+                    ->alignCenter()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('generation')
-                    ->searchable(),
+                    ->badge()
+                    ->formatStateUsing(function ($state) {
+                        if (!$state) return '-';
+                        $gens = [
+                            "generation-i" => "Gen 1",
+                            "generation-ii" => "Gen 2",
+                            "generation-iii" => "Gen 3",
+                            "generation-iv" => "Gen 4",
+                            "generation-v" => "Gen 5",
+                            "generation-vi" => "Gen 6",
+                            "generation-vii" => "Gen 7",
+                            "generation-viii" => "Gen 8",
+                            "generation-ix" => "Gen 9",
+                            "generation-x" => "Gen 10",
+                        ];
+                        return $gens[$state] ?? ucwords(str_replace('-', ' ', $state));
+                    })
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('effect_chance')
+                    ->label('Effect %')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('contest_type')
+                    ->label('Contest')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('target')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('ailment')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('meta_category')
-                    ->searchable(),
+                    ->label('Category')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('min_hits')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('max_hits')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('min_turns')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('max_turns')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('drain')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('healing')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('crit_rate')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('ailment_chance')
+                    ->label('Ailment %')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('flinch_chance')
+                    ->label('Flinch %')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('stat_chance')
+                    ->label('Stat %')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
