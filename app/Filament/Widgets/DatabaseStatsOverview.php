@@ -19,11 +19,14 @@ class DatabaseStatsOverview extends StatsOverviewWidget
         return [
             Stat::make('Pokemon', Pokemon::count())
                 ->description('Total Pokemon imported')
+                ->url('/pokemon/')
                 ->descriptionIcon('heroicon-m-sparkles')
                 ->color('success')
                 ->chart($this->getWeeklyTrend(Pokemon::class)),
 
             Stat::make('Species', PokemonSpecies::count())
+                ->url('/pokemon/')
+
                 ->description('Pokemon species')
                 ->descriptionIcon('heroicon-m-cube')
                 ->color('info'),
@@ -40,6 +43,7 @@ class DatabaseStatsOverview extends StatsOverviewWidget
 
             Stat::make('Moves', Move::count())
                 ->description('Unique moves')
+                ->url('/moves/')
                 ->descriptionIcon('heroicon-m-fire')
                 ->color('danger'),
 

@@ -10,6 +10,7 @@ use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -33,6 +34,7 @@ class MovesTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('power')
+                    ->placeholder('-')
                     ->numeric()
                     ->sortable()
                     ->toggleable(),
@@ -44,6 +46,7 @@ class MovesTable
                 TextColumn::make('accuracy')
                     ->numeric()
                     ->formatStateUsing(fn ($state) => $state . '%')
+                    ->placeholder('100%')
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('priority')
@@ -193,6 +196,16 @@ class MovesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                TernaryFilter::make('has_pokemon')
+                    ->label('Has Pokemon')
+                    ->placeholder('All moves')
+                    ->trueLabel('With Pokemon')
+                    ->falseLabel('Without Pokemon')
+                    ->default(true)
+                    ->queries(
+                        true: fn($query) => $query->has('pokemon', '>', 0),
+                        false: fn($query) => $query->has('pokemon', '=', 0),
+                    ),
                 TrashedFilter::make(),
             ])
             ->recordActions([

@@ -23,6 +23,7 @@ class PokemonResource extends Resource
     protected static ?string $model = Pokemon::class;
 
 
+    protected static ?int $navigationSort = -2;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
@@ -49,7 +50,6 @@ class PokemonResource extends Resource
             //
         ];
     }
-
     public static function getPages(): array
     {
         return [
