@@ -14,11 +14,12 @@ use App\Models\PokemonStat;
 use App\Models\Type;
 use App\Services\PokeApiImporter;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
+
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Widgets\Widget;
 use Livewire\Attributes\On;
 
@@ -183,8 +184,7 @@ class PokeApiImportWidget extends Widget implements HasForms
         $this->dispatch('import-started');
     }
 
-    #[On('poll-import')]
-    public function pollImport(): void
+    public function updateProgress(): void
     {
         if (!$this->isImporting) {
             return;
@@ -198,8 +198,11 @@ class PokeApiImportWidget extends Widget implements HasForms
         $this->successCount = $data['successCount'] ?? 0;
         $this->errorCount = $data['errorCount'] ?? 0;
 
-        // Check if import is complete (no changes in progress for a while could indicate completion)
-        // You could add more sophisticated completion detection here
+        // Auto-stop when complete
+        if (($this->progress['current_step'] ?? '') === 'complete') {
+            $this->stopImport();
+            $this->dispatch('import-completed');
+        }
     }
 
     public function stopImport(): void
