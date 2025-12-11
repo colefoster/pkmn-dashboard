@@ -13,49 +13,141 @@ use App\Models\PokemonSpecies;
 use App\Models\PokemonStat;
 use App\Models\Type;
 use App\Services\PokeApiImporter;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
 use Filament\Widgets\Widget;
 use Livewire\Attributes\On;
 
-class PokeApiImportWidget extends Widget
+class PokeApiImportWidget extends Widget implements HasForms
 {
+    use InteractsWithForms;
+
     protected string $view = 'filament.widgets.poke-api-import-widget';
 
     protected int | string | array $columnSpan = 'full';
 
-    public int $delay = 100;
-    public int $limit = 50;
-    public ?int $maxPokemon = null;
+    public ?array $data = [];
+
     public bool $isImporting = false;
     public array $progress = [];
     public int $successCount = 0;
     public int $errorCount = 0;
 
-    // Individual import type selections
-    public bool $importTypes = false;
-    public bool $importAbilities = false;
-    public bool $importMoves = false;
-    public bool $importItems = false;
-    public bool $importSpecies = false;
-    public bool $importEvolutionChains = false;
-    public bool $importPokemon = false;
-
     public function mount(): void
     {
         $this->resetProgress();
+        $this->form->fill([
+            'delay' => 100,
+            'limit' => 50,
+            'maxPokemon' => null,
+            'importTypes' => false,
+            'importAbilities' => false,
+            'importMoves' => false,
+            'importItems' => false,
+            'importSpecies' => false,
+            'importEvolutionChains' => false,
+            'importPokemon' => false,
+        ]);
+    }
+
+    public function form(Form $form): Form
+    {
+        $counts = $this->getCounts();
+
+        return $form
+            ->schema([
+                Section::make('Import Configuration')
+                    ->description('Configure API request parameters')
+                    ->schema([
+                        Grid::make(3)
+                            ->schema([
+                                TextInput::make('delay')
+                                    ->label('Delay (ms)')
+                                    ->helperText('Delay between API requests')
+                                    ->numeric()
+                                    ->default(100)
+                                    ->minValue(0)
+                                    ->maxValue(2000)
+                                    ->required(),
+
+                                TextInput::make('limit')
+                                    ->label('Limit per Page')
+                                    ->helperText('Items fetched per request')
+                                    ->numeric()
+                                    ->default(50)
+                                    ->minValue(1)
+                                    ->maxValue(100)
+                                    ->required(),
+
+                                TextInput::make('maxPokemon')
+                                    ->label('Max Pokemon')
+                                    ->helperText('Leave empty for all')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->maxValue(10000),
+                            ]),
+                    ])
+                    ->collapsible(),
+
+                Section::make('Select Data Types')
+                    ->description('Choose which data types to import (dependencies will be validated)')
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                Checkbox::make('importTypes')
+                                    ->label('Types')
+                                    ->helperText($counts['types'] . ' in database')
+                                    ->disabled(!$this->canImportTypes()),
+
+                                Checkbox::make('importAbilities')
+                                    ->label('Abilities')
+                                    ->helperText($counts['abilities'] . ' in database')
+                                    ->disabled(!$this->canImportAbilities()),
+
+                                Checkbox::make('importMoves')
+                                    ->label('Moves')
+                                    ->helperText($this->canImportMoves() ? $counts['moves'] . ' in database' : $this->getDependencyMessage('moves'))
+                                    ->disabled(!$this->canImportMoves()),
+
+                                Checkbox::make('importItems')
+                                    ->label('Items')
+                                    ->helperText($counts['items'] . ' in database')
+                                    ->disabled(!$this->canImportItems()),
+
+                                Checkbox::make('importSpecies')
+                                    ->label('Pokemon Species')
+                                    ->helperText($counts['species'] . ' in database')
+                                    ->disabled(!$this->canImportSpecies()),
+
+                                Checkbox::make('importEvolutionChains')
+                                    ->label('Evolution Chains')
+                                    ->helperText($this->canImportEvolutionChains() ? EvolutionChain::count() . ' in database' : $this->getDependencyMessage('evolution_chains'))
+                                    ->disabled(!$this->canImportEvolutionChains()),
+
+                                Checkbox::make('importPokemon')
+                                    ->label('Pokemon')
+                                    ->helperText($this->canImportPokemon() ? $counts['pokemon'] . ' in database' : $this->getDependencyMessage('pokemon'))
+                                    ->disabled(!$this->canImportPokemon())
+                                    ->columnSpan(2),
+                            ]),
+                    ]),
+            ])
+            ->statePath('data');
     }
 
     public function startImport(): void
     {
-        $this->validate([
-            'delay' => 'required|integer|min:0|max:2000',
-            'limit' => 'required|integer|min:1|max:100',
-            'maxPokemon' => 'nullable|integer|min:1|max:10000',
-        ]);
+        $data = $this->form->getState();
 
         // Validate at least one type is selected
-        if (!$this->importTypes && !$this->importAbilities && !$this->importMoves &&
-            !$this->importItems && !$this->importSpecies && !$this->importEvolutionChains &&
-            !$this->importPokemon) {
+        if (!($data['importTypes'] ?? false) && !($data['importAbilities'] ?? false) && !($data['importMoves'] ?? false) &&
+            !($data['importItems'] ?? false) && !($data['importSpecies'] ?? false) && !($data['importEvolutionChains'] ?? false) &&
+            !($data['importPokemon'] ?? false)) {
             $this->dispatch('import-error', message: 'Please select at least one data type to import');
             return;
         }
@@ -65,20 +157,20 @@ class PokeApiImportWidget extends Widget
 
         // Build the command with selected types
         $flags = [];
-        if ($this->importTypes) $flags[] = '--types';
-        if ($this->importAbilities) $flags[] = '--abilities';
-        if ($this->importMoves) $flags[] = '--moves';
-        if ($this->importItems) $flags[] = '--items';
-        if ($this->importSpecies) $flags[] = '--species';
-        if ($this->importEvolutionChains) $flags[] = '--evolution-chains';
-        if ($this->importPokemon) $flags[] = '--pokemon';
+        if ($data['importTypes'] ?? false) $flags[] = '--types';
+        if ($data['importAbilities'] ?? false) $flags[] = '--abilities';
+        if ($data['importMoves'] ?? false) $flags[] = '--moves';
+        if ($data['importItems'] ?? false) $flags[] = '--items';
+        if ($data['importSpecies'] ?? false) $flags[] = '--species';
+        if ($data['importEvolutionChains'] ?? false) $flags[] = '--evolution-chains';
+        if ($data['importPokemon'] ?? false) $flags[] = '--pokemon';
 
         $command = sprintf(
             'php %s/artisan pokeapi:import --delay=%d --limit=%d%s %s > /dev/null 2>&1 &',
             base_path(),
-            $this->delay,
-            $this->limit,
-            $this->maxPokemon ? " --max={$this->maxPokemon}" : '',
+            $data['delay'],
+            $data['limit'],
+            !empty($data['maxPokemon']) ? " --max={$data['maxPokemon']}" : '',
             implode(' ', $flags)
         );
 
