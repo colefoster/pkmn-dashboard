@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\DatabaseStatsOverview;
+use App\Filament\Widgets\PokeApiImportWidget;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Pages\Dashboard as BaseDashboard;
@@ -21,6 +22,7 @@ class Dashboard extends BaseDashboard
     {
         return [
             DatabaseStatsOverview::class,
+            PokeApiImportWidget::class,
         ];
     }
 }
