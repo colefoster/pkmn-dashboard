@@ -61,17 +61,47 @@ class PokeApiImporter
         ]);
     }
 
-    public function importAll(?int $maxPokemon = null, int $limit = 50): void
+    public function importAll(?int $maxPokemon = null, int $limit = 50, array $types = []): void
     {
         set_time_limit(0);
 
-        $this->importTypes();
-        $this->importAbilities();
-        $this->importMoves();
-        $this->importItems();
-        $this->importPokemonSpecies($maxPokemon);
-        $this->importEvolutionChains();
-        $this->importPokemon($limit, $maxPokemon);
+        // If no types specified, import all
+        if (empty($types)) {
+            $types = ['types', 'abilities', 'moves', 'items', 'species', 'evolution_chains', 'pokemon'];
+        }
+
+        if (in_array('types', $types)) {
+            $this->importTypes();
+        }
+
+        if (in_array('abilities', $types)) {
+            $this->importAbilities();
+        }
+
+        if (in_array('moves', $types)) {
+            $this->importMoves();
+        }
+
+        if (in_array('items', $types)) {
+            $this->importItems();
+        }
+
+        if (in_array('species', $types)) {
+            $this->importPokemonSpecies($maxPokemon);
+        }
+
+        if (in_array('evolution_chains', $types)) {
+            $this->importEvolutionChains();
+        }
+
+        if (in_array('pokemon', $types)) {
+            $this->importPokemon($limit, $maxPokemon);
+        }
+
+        // Mark as complete
+        $this->progress['current_step'] = 'complete';
+        $this->progress['message'] = 'Import completed!';
+        $this->saveProgress();
     }
 
     public function importTypes(): void
