@@ -89,9 +89,6 @@ class ImportPokemon extends Command
         }
     }
 
-    // SEE PART 2 FOR IMPORT METHODS
-    // CONTINUATION OF ImportPokemon.php
-
     private function importTypes(): void
     {
         $response = $this->fetchFromApi('/type');

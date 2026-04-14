@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Moves\Schemas\Components;
 
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Section;
 use Filament\Support\Colors\Color;
 
 class MoveDetailsSection
@@ -18,6 +19,8 @@ class MoveDetailsSection
                 'xl' => 4,
             ])
             ->schema([
+                Section::make('Move Details')
+
                 TextEntry::make('name')
                     ->label('Name')
                     ->formatStateUsing(fn ($state) => ucwords(str_replace('-', ' ', $state)))
